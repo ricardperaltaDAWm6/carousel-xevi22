@@ -2,7 +2,7 @@ window.onload = function () {
     // Variables
 
     // Añadir las tres imágenes del directorio "img" al array IMAGENES.
-    const IMAGENES = [];
+    const IMAGENES = ["img/img1.jpg","img/img2.jpg","img/img3.jpg"];
 
     const TIEMPO_INTERVALO_MILESIMAS_SEG = 1000;
 
@@ -10,11 +10,11 @@ window.onload = function () {
     let posicionActual = 0;
 
     // variables con los elementos del DOM HTML, aplicar el selector necesario.
-    let $botonRetroceder
-    let $botonAvanzar 
-    let $imagen 
-    let $botonPlay 
-    let $botonStop
+    let $botonRetroceder = document.getElementById("retroceder");
+    let $botonAvanzar =document.getElementById("avanzar");
+    let $imagen = document.getElementById("imagen");
+    let $botonPlay = document.getElementById("play");
+    let $botonStop= document.getElementById("stop");
 
     // Identificador del proceso que se ejecuta con setInterval().
     let intervalo;
@@ -25,9 +25,11 @@ window.onload = function () {
      * Funcion que cambia la foto en la siguiente posicion
      */
     function pasarFoto() {
-        // se incrementa el indice (posicionActual)
-
-        // ...y se muestra la imagen que toca.
+        if (posicionActual===2){
+            posicionActual=-1;
+        }
+        posicionActual++;
+        renderizarImagen();
     }
 
     /**
@@ -35,7 +37,11 @@ window.onload = function () {
      */
     function retrocederFoto() {
         // se incrementa el indice (posicionActual)
-
+        if (posicionActual===0){
+            posicionActual=3;
+        }
+        posicionActual--;
+        renderizarImagen();
         // ...y se muestra la imagen que toca.
     }
 
@@ -50,26 +56,37 @@ window.onload = function () {
      * Activa el autoplay de la imagen
      */
     function playIntervalo() {
+        intervalo = setInterval(pasarFoto, TIEMPO_INTERVALO_MILESIMAS_SEG, 'Parameter 1', 'Parameter 2');
         // Documentación de la función setInterval: https://developer.mozilla.org/en-US/docs/Web/API/setInterval
         // Mediante la función setInterval() se ejecuta la función pasarFoto cada TIEMPO_INTERVALO_MILESIMAS_SEG.
-        
+        $botonPlay.setAttribute("disabled",true);
+        $botonStop.removeAttribute("disabled")
+        $botonStop.setAttribute("enabled",true);
 
         // Desactivamos los botones de control necesarios. Utilizando setAttribute y removeAttribute.
-
     }
 
     /**
      * Para el autoplay de la imagen
      */
     function stopIntervalo() {
+        clearInterval(intervalo)
+        $botonPlay.removeAttribute("disabled")
+        $botonPlay.setAttribute("enabled",true);
+        $botonStop.removeAttribute("enabled")
+        $botonStop.setAttribute("disabled",true);
         // Desactivar la ejecución de intervalo.
-
         // Activamos los botones de control. Utilizando setAttribute y removeAttribute.
     }
 
     // Eventos
     // Añadimos los evenntos necesarios para cada boton. Mediante addEventListener.
 
+    $botonAvanzar.addEventListener('click',pasarFoto);
+    $botonRetroceder.addEventListener('click',retrocederFoto);
+    $botonPlay.addEventListener('click',playIntervalo);
+    $botonStop.addEventListener('click',stopIntervalo);
+
     // Iniciar
     renderizarImagen();
-} 
+}
